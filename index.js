@@ -28,10 +28,17 @@ exports.watch = function (opts) {
 };
 
 exports.run = function (opts, cb) {
-	gulp.task('build', build(opts));
-	gulp.task('fonts', fonts(opts));
+
+	// to avoid task "evication"
+	var timestamp = +(new Date());
+	var buildTaskName = "build" + timestamp;
+	var fontsTaskName = "fonts" + timestamp;
+
+
+	gulp.task(buildTaskName, build(opts));
+	gulp.task(fontsTaskName, fonts(opts));
 	if (typeof cb === 'function') {
-		return series('build', 'fonts', cb);
+		return series(buildTaskName, fontsTaskName, cb);
 	}
-	return series('build', 'fonts');
+	return series(buildTaskName, fontsTaskName);
 };
